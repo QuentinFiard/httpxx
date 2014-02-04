@@ -46,6 +46,7 @@ add_library(http-parser
   ${http-parser_sources}
 )
 
+install(FILES ${http-parser_headers} DESTINATION include/http-parser)
 install(TARGETS http-parser LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
 # Build the primary target.
