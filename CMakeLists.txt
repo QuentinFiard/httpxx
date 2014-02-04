@@ -24,7 +24,7 @@ endfunction()
 
 enable_testing()
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/http-parser)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs)
 
 # http-parser does not provide a CMake build script.
 set(http_parser_DIR
@@ -45,6 +45,8 @@ add_library(http-parser
   ${http-parser_headers}
   ${http-parser_sources}
 )
+target_include_directories(
+    http-parser PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/libs/http-parser)
 
 install(FILES ${http-parser_headers} DESTINATION include/http-parser)
 install(TARGETS http-parser LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
