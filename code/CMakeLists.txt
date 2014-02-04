@@ -22,9 +22,10 @@ set(sources
   Url.cpp
 )
 add_library(httpxx
-  STATIC
   ${sources}
   ${headers}
 )
 target_link_libraries(httpxx http-parser)
 add_dependencies(httpxx http-parser)
+
+install(TARGETS httpxx LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)

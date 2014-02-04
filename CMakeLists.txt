@@ -42,16 +42,19 @@ if(MSVC)
   )
 endif()
 add_library(http-parser
-  STATIC
   ${http-parser_headers}
   ${http-parser_sources}
 )
 
+install(TARGETS http-parser LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+
 # Build the primary target.
 add_subdirectory(code)
 
+option(BUILD_EXAMPLES "Build examples and documentation" ON)
+
 # When building in standalone mode, build demo projects.
-if(${PROJECT_NAME} STREQUAL ${CMAKE_PROJECT_NAME})
+if(BUILD_EXAMPLES AND ${PROJECT_NAME} STREQUAL ${CMAKE_PROJECT_NAME})
 
   # Build API documentation.
   find_package(Doxygen QUIET)
