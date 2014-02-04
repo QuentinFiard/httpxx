@@ -26,30 +26,30 @@ enable_testing()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs)
 
-# http-parser does not provide a CMake build script.
+# http_parser does not provide a CMake build script.
 set(http_parser_DIR
-   ${CMAKE_SOURCE_DIR}/libs/http-parser
+   ${CMAKE_SOURCE_DIR}/libs/http_parser
 )
-set(http-parser_headers ${http_parser_DIR}/http_parser.h)
-set(http-parser_sources ${http_parser_DIR}/http_parser.c)
+set(http_parser_headers ${http_parser_DIR}/http_parser.h)
+set(http_parser_sources ${http_parser_DIR}/http_parser.c)
 if(MSVC)
   # MSVC does not support C99, but its C++ compiler is
-  # compatible with the http-parser library's code.
+  # compatible with the http_parser library's code.
   set_source_files_properties(
-    ${http-parser_headers}
-    ${http-parser_sources}
+    ${http_parser_headers}
+    ${http_parser_sources}
     PROPERTIES LANGUAGE CXX
   )
 endif()
-add_library(http-parser
-  ${http-parser_headers}
-  ${http-parser_sources}
+add_library(http_parser
+  ${http_parser_headers}
+  ${http_parser_sources}
 )
 target_include_directories(
-    http-parser PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/libs/http-parser)
+    http_parser PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/libs/http_parser)
 
-install(FILES ${http-parser_headers} DESTINATION include/http-parser)
-install(TARGETS http-parser LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+install(FILES ${http_parser_headers} DESTINATION include/http_parser)
+install(TARGETS http_parser LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
 # Build the primary target.
 add_subdirectory(code)

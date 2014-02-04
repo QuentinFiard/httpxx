@@ -25,8 +25,8 @@ add_library(httpxx
   ${sources}
   ${headers}
 )
-target_link_libraries(httpxx http-parser)
-add_dependencies(httpxx http-parser)
+target_link_libraries(httpxx http_parser)
+add_dependencies(httpxx http_parser)
 
 install(FILES ${headers} DESTINATION include/httpxx)
 install(TARGETS httpxx LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
