@@ -20,7 +20,7 @@ namespace http {
 class Error : public std::exception {
   /* data. */
  private:
-  ::http_errno myNumber;
+  http_errno myNumber;
 
   /* construction. */
  public:
@@ -28,7 +28,7 @@ class Error : public std::exception {
    * @brief Build an @c Error instance documenting a specific error.
    * @param number Numeric error code.
    */
-  explicit Error(::http_errno number);
+  explicit Error(http_errno number);
 
   /* methods. */
  public:

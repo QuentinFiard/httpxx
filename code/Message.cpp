@@ -130,7 +130,7 @@ std::size_t Message::feed(const void* data, ::size_t size) {
 std::size_t Message::feed(const char* data, ::size_t size) {
   std::size_t used = ::http_parser_execute(&myParser, &mySettings, data, size);
 
-  const ::http_errno error = static_cast< ::http_errno>(myParser.http_errno);
+  const http_errno error = static_cast< http_errno>(myParser.http_errno);
 
   // The 'on_message_complete' and 'on_headers_complete' callbacks fail
   // on purpose to force the parser to stop between pipelined requests.
