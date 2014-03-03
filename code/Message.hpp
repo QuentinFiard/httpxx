@@ -8,14 +8,13 @@
 // (see "LICENSE.txt"). If not, terms of the license are available online at
 // "http://www.opensource.org/licenses/mit".
 
-#include <http_parser/http_parser.h>
-
-#include <map>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <http_parser/http_parser.h>
+#include "Flags.hpp"
 
 namespace http {
-
-class Flags;
 
 /*!
  * @brief Common denominator of @c Request and @c Response classes.
@@ -27,7 +26,15 @@ class Flags;
 class Message {
   /* nested types. */
  private:
-  typedef std::map<std::string, std::string> Headers;
+  typedef std::unordered_map<std::string, std::string> Headers;
+  typedef Headers::const_iterator HeaderIterator;
+  // To avoid deallocating the memory of each header string each time we clear
+  // the request, we only clear the contents of each header. To tell the
+  // difference between non-existing headers and empty headers we then maintain
+  // a set of header iterators to the actually existing headers.
+  typedef std::function<size_t(const HeaderIterator& x)> HeaderIteratorHasher;
+  typedef std::unordered_set<HeaderIterator, HeaderIteratorHasher>
+      ActiveHeaders;
 
  protected:
   typedef void (*Configure)(::http_parser_settings&);
@@ -52,9 +59,11 @@ class Message {
   ::http_parser myParser;
 
   // Accumulate info, then push to map.
+  bool myHasPendingHeader;
   std::string myCurrentField;
   std::string myCurrentValue;
-  std::map<std::string, std::string> myHeaders;
+  Headers myHeaders;
+  ActiveHeaders myActiveHeaders;
 
   // Signal when message is complete.
   bool myComplete;
@@ -70,7 +79,7 @@ class Message {
 
  private:
   // Not copyable.
-  Message(const Message&);
+  Message(const Message&) = delete;
 
  public:
   virtual ~Message();
@@ -192,13 +201,13 @@ class Message {
   /*!
    * @brief Obtain the value of the header named @a field.
    * @param field Name of header to check.
-   * @return An empty string if the header was not present, the header
-   *  value otherwise.
+   * @return A const reference to the header value. Throws if the header does
+   *  not exist.
    *
    * @warning This value is unspecified until @c headerscomplete()
    *  returns @c true.
    */
-  std::string header(const std::string& field) const;
+  const std::string& header(const std::string& field) const;
 
   /*!
    * @brief Check if this is not the last request/response.

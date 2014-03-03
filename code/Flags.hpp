@@ -8,9 +8,11 @@
 // (see "LICENSE.txt"). If not, terms of the license are available online at
 // "http://www.opensource.org/licenses/mit".
 
+#include <bitset>
 #include <http_parser/http_parser.h>
 
 namespace http {
+namespace flags {
 
 /*!
  * @brief Extra information about the request or response.
@@ -20,26 +22,11 @@ namespace http {
  * or if you should use switch to an alternate protocol handler
  * (WebSockets, for instance).
  */
-class Flags {
-  /* nested types. */
- public:
-  typedef ::flags Value;
-
-  /* data. */
- private:
-  Value myValue;
-
-  /* class methods. */
- public:
-  /*!
-   * @brief Extract the flags set in @a parser.
-   */
-  static const Flags of(const ::http_parser& parser);
-
+enum {
   /*!
    * @brief Check if the message body is in chuncked format.
    */
-  static const Flags chunked();
+  CHUNKED,
 
   /*!
    * @brief Check if the client requested keep-alive.
@@ -49,19 +36,18 @@ class Flags {
    *  keep alive for performance reasons when their are hordes of
    *  requests coming mostly from different clients.
    *
-   * @see close()
+   * @see CLOSE
    */
-  static const Flags keepalive();
+  KEEPALIVE,
 
   /*!
    * @brief Check if a new connection should be established for the
    *  next request.
    *
-   * @see keepalive()
+   * @see KEEPALIVE
    */
-  static const Flags close();
-
-  static const Flags trailing();
+  CLOSE,
+  TRAILING,
 
   /*!
    * @brief Check if the client requested a protocol upgrade.
@@ -75,23 +61,20 @@ class Flags {
    * In particular, check the "Upgrade" header to determine what
    * protocol was requested.
    */
-  static const Flags upgrade();
+  UPGRADE,
+  SKIPBODY,
 
-  static const Flags skipbody();
-
-  /* construction. */
- private:
-  // Use prototype instances.
-  Flags(Value value);
-
-  /* operators. */
- public:
   /*!
-   * @brief Check for signaled flags.
-   * @return @c true if all flags in @a rhs are signaled.
+   * @brief Number of flags.
    */
-  bool operator&(const Flags& rhs) const;
+  MAX_FLAGS
 };
-}
+
+}  // namespace flags
+
+typedef std::bitset<flags::MAX_FLAGS> Flags;
+Flags GetFlagsFromParser(const ::http_parser& parser);
+
+}  // namespace http
 
 #endif /* _http_Flags_hpp__ */

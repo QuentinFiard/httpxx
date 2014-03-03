@@ -51,7 +51,7 @@ namespace http {
  *    // ...
  *  }
  *  // signal end of transfer.
- *  if (!(request.flags()&Flags::keepalive())) {
+ *  if (!request.flags().test(flags::keepalive()) {
  *    ::shutdown(socket, SD_BOTH);
  *  }
  *  // prepare to process another request.
@@ -100,7 +100,7 @@ class Request : public Message {
   const Method method() const;
 
   /*!
-   * @brief Get the HTTP method as a string.
+   * @brief Get the HTTP method name as a string.
    */
   std::string method_name() const;
 

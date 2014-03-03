@@ -5,8 +5,8 @@
 // (see "LICENSE.txt"). If not, terms of the license are available online at
 // "http://www.opensource.org/licenses/mit".
 
-#include "Request.hpp"
 #include <string.h>
+#include "Request.hpp"
 
 namespace http {
 
@@ -45,14 +45,15 @@ void Request::clear() {
 }
 
 void Request::reset_buffers() {
-  std::string().swap(myUrl), Message::reset_buffers();
+  decltype(myUrl)().swap(myUrl), Message::reset_buffers();
 }
 
-const Method Request::method() const { return Method::of(myParser); }
+const Method Request::method() const { return GetMethodFromParser(myParser); }
 
-std::string Request::method_name() const { return http_method_str(method()); }
+std::string Request::method_name() const { return GetMethodName(method()); }
 
 bool Request::upgrade() const { return myParser.upgrade != 0; }
 
 const std::string& Request::url() const { return myUrl; }
-}
+
+}  // namespace http

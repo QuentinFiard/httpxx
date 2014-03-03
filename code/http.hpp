@@ -11,7 +11,6 @@
 #include "BufferedMessage.hpp"
 #include "Error.hpp"
 #include "Flags.hpp"
-#include "icompare.hpp"
 #include "Message.hpp"
 #include "Method.hpp"
 #include "Request.hpp"

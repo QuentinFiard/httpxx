@@ -15,51 +15,41 @@ namespace http {
 /*!
  * @brief Enumeration of "well known" HTTP request methods.
  */
-class Method {
-  /* nested types. */
- private:
-  typedef ::http_method Value;
 
-  /* class methods. */
- public:
-  /*!
-   * @brief Extract the method set in @a parser.
-   */
-  static const Method of(const ::http_parser& parser);
-
+enum Method {
   //! @defgroup Standard HTTP methods.
   //! @{
 
   /*!
    * @brief Delete the resource.
    */
-  static const Method del();
+  DELETE,
 
   /*!
    * @brief Fetch the resource.
    */
-  static const Method get();
+  GET,
 
   /*!
    * @brief Like GET, but don't send a response body (headers only).
    */
-  static const Method head();
+  HEAD,
 
   /*!
    * @brief Submit information about the resource.
    *
-   * @see put()
-   * @see patch()
+   * @see PUT
+   * @see PATCH
    */
-  static const Method post();
+  POST,
 
   /*!
    * @brief Replace the resource.
    *
-   * @see post()
-   * @see patch()
+   * @see POST
+   * @see PATCH
    */
-  static const Method put();
+  PUT,
 
   //! @}
 
@@ -69,22 +59,22 @@ class Method {
   /*!
    * @brief Partially update the resource (RFC 5789).
    *
-   * @see post()
-   * @see put()
+   * @see POST
+   * @see PUT
    */
-  static const Method patch();
+  PATCH,
 
   //! @}
 
   /*!
    * @brief Establish a connection for tunnelling another protocol.
    */
-  static const Method connect();
+  CONNECT,
 
   /*!
    * @brief Fetch requirements or capabilities w/ respect to the URI.
    */
-  static const Method options();
+  OPTIONS,
 
   /*!
    * @brief Echo request as response body.
@@ -93,56 +83,42 @@ class Method {
    * proxies and gateways) and for testing, to check what is received
    * at the other end of the connection.
    */
-  static const Method trace();
+  TRACE,
 
   //! @defgroup WebDAV HTTP extension methods.
   //! @{
-
-  static const Method copy();
-  static const Method lock();
-  static const Method mkcol();
-  static const Method move();
-  static const Method propfind();
-  static const Method proppatch();
-  static const Method unlock();
+  COPY,
+  LOCK,
+  MKCOL,
+  MOVE,
+  PROPFIND,
+  PROPPATCH,
+  UNLOCK,
 
   //! @}
 
   //! @defgroup Subversion HTTP extension methods.
   //! @{
-
-  static const Method report();
-  static const Method mkactivity();
-  static const Method checkout();
-  static const Method merge();
+  REPORT,
+  MKACTIVITY,
+  CHECKOUT,
+  MERGE,
 
   //! @}
 
   //! @defgroup Universal Plug and Play (UPNP) HTTP extension methods.
   //! @{
-
-  static const Method msearch();
-  static const Method notify();
-  static const Method subscribe();
-  static const Method unsubscribe();
+  MSEARCH,
+  NOTIFY,
+  SUBSCRIBE,
+  UNSUBSCRIBE
 
   //! @}
-
-  /* data. */
- private:
-  Value myValue;
-
-  /* construction. */
- private:
-  Method(Value value);
-
-  /* operators. */
- public:
-  bool operator==(const Method& rhs) const;
-  bool operator!=(const Method& rhs) const;
-
-  operator Value() const;
 };
-}
+
+Method GetMethodFromParser(const http_parser& parser);
+const char* GetMethodName(Method method);
+
+}  // namespace http
 
 #endif /* _http_Method__ */

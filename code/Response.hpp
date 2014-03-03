@@ -50,7 +50,7 @@ namespace http {
  *    // ...
  *  }
  *  // signal end of transfer.
- *  if (!(response.flags()&Flags::keepalive())) {
+ *  if (!response.flags().test(flags::KEEPALIVE)) {
  *    ::shutdown(socket, SD_BOTH);
  *  }
  *  // prepare to process another response.

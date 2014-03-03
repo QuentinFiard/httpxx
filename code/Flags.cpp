@@ -9,25 +9,15 @@
 
 namespace http {
 
-const Flags Flags::of(const ::http_parser& parser) {
-  return static_cast< ::flags>(parser.flags);
+Flags GetFlagsFromParser(const ::http_parser& parser) {
+  Flags res;
+  if (parser.flags & F_CHUNKED) res.set(flags::CHUNKED);
+  if (parser.flags & F_CONNECTION_KEEP_ALIVE) res.set(flags::KEEPALIVE);
+  if (parser.flags & F_CONNECTION_CLOSE) res.set(flags::CLOSE);
+  if (parser.flags & F_TRAILING) res.set(flags::TRAILING);
+  if (parser.flags & F_UPGRADE) res.set(flags::UPGRADE);
+  if (parser.flags & F_SKIPBODY) res.set(flags::SKIPBODY);
+  return res;
 }
 
-const Flags Flags::chunked() { return F_CHUNKED; }
-
-const Flags Flags::keepalive() { return F_CONNECTION_KEEP_ALIVE; }
-
-const Flags Flags::close() { return F_CONNECTION_CLOSE; }
-
-const Flags Flags::trailing() { return F_TRAILING; }
-
-const Flags Flags::upgrade() { return F_UPGRADE; }
-
-const Flags Flags::skipbody() { return F_SKIPBODY; }
-
-Flags::Flags(Value value) : myValue(value) {}
-
-bool Flags::operator&(const Flags& rhs) const {
-  return (myValue & rhs.myValue) != 0;
-}
-}
+}  // namespace http

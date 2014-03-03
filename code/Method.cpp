@@ -7,69 +7,120 @@
 
 #include "Method.hpp"
 
+#include <iostream>
+
 namespace http {
 
-const Method Method::of(const ::http_parser& parser) {
-  return static_cast< ::http_method>(parser.method);
+Method GetMethodFromParser(const http_parser& parser) {
+  switch (parser.method) {
+    case HTTP_DELETE:
+      return DELETE;
+    case HTTP_GET:
+      return GET;
+    case HTTP_HEAD:
+      return HEAD;
+    case HTTP_POST:
+      return POST;
+    case HTTP_PUT:
+      return PUT;
+    case HTTP_CONNECT:
+      return CONNECT;
+    case HTTP_OPTIONS:
+      return OPTIONS;
+    case HTTP_TRACE:
+      return TRACE;
+    case HTTP_COPY:
+      return COPY;
+    case HTTP_LOCK:
+      return LOCK;
+    case HTTP_MKCOL:
+      return MKCOL;
+    case HTTP_MOVE:
+      return MOVE;
+    case HTTP_PROPFIND:
+      return PROPFIND;
+    case HTTP_PROPPATCH:
+      return PROPPATCH;
+    case HTTP_UNLOCK:
+      return UNLOCK;
+    case HTTP_REPORT:
+      return REPORT;
+    case HTTP_MKACTIVITY:
+      return MKACTIVITY;
+    case HTTP_CHECKOUT:
+      return CHECKOUT;
+    case HTTP_MERGE:
+      return MERGE;
+    case HTTP_MSEARCH:
+      return MSEARCH;
+    case HTTP_NOTIFY:
+      return NOTIFY;
+    case HTTP_SUBSCRIBE:
+      return SUBSCRIBE;
+    case HTTP_UNSUBSCRIBE:
+      return UNSUBSCRIBE;
+    case HTTP_PATCH:
+      return PATCH;
+    default:
+      std::cerr << "Unknown HTTP method: " << parser.method << std::endl;
+      exit(1);
+  }
 }
 
-const Method Method::del() { return HTTP_DELETE; }
-
-const Method Method::get() { return HTTP_GET; }
-
-const Method Method::head() { return HTTP_HEAD; }
-
-const Method Method::post() { return HTTP_POST; }
-
-const Method Method::put() { return HTTP_PUT; }
-
-const Method Method::connect() { return HTTP_CONNECT; }
-
-const Method Method::options() { return HTTP_OPTIONS; }
-
-const Method Method::trace() { return HTTP_TRACE; }
-
-const Method Method::copy() { return HTTP_COPY; }
-
-const Method Method::lock() { return HTTP_LOCK; }
-
-const Method Method::mkcol() { return HTTP_MKCOL; }
-
-const Method Method::move() { return HTTP_MOVE; }
-
-const Method Method::propfind() { return HTTP_PROPFIND; }
-
-const Method Method::proppatch() { return HTTP_PROPPATCH; }
-
-const Method Method::unlock() { return HTTP_UNLOCK; }
-
-const Method Method::report() { return HTTP_REPORT; }
-
-const Method Method::mkactivity() { return HTTP_MKACTIVITY; }
-
-const Method Method::checkout() { return HTTP_CHECKOUT; }
-
-const Method Method::merge() { return HTTP_MERGE; }
-
-const Method Method::msearch() { return HTTP_MSEARCH; }
-
-const Method Method::notify() { return HTTP_NOTIFY; }
-
-const Method Method::subscribe() { return HTTP_SUBSCRIBE; }
-
-const Method Method::unsubscribe() { return HTTP_UNSUBSCRIBE; }
-
-const Method Method::patch() { return HTTP_PATCH; }
-
-Method::Method(Value value) : myValue(value) {}
-
-bool Method::operator==(const Method& rhs) const {
-  return myValue == rhs.myValue;
+const char* GetMethodName(Method method) {
+  switch (method) {
+    case DELETE:
+      return "DELETE";
+    case GET:
+      return "GET";
+    case HEAD:
+      return "HEAD";
+    case POST:
+      return "POST";
+    case PUT:
+      return "PUT";
+    case CONNECT:
+      return "CONNECT";
+    case OPTIONS:
+      return "OPTIONS";
+    case TRACE:
+      return "TRACE";
+    case COPY:
+      return "COPY";
+    case LOCK:
+      return "LOCK";
+    case MKCOL:
+      return "MKCOL";
+    case MOVE:
+      return "MOVE";
+    case PROPFIND:
+      return "PROPFIND";
+    case PROPPATCH:
+      return "PROPPATCH";
+    case UNLOCK:
+      return "UNLOCK";
+    case REPORT:
+      return "REPORT";
+    case MKACTIVITY:
+      return "MKACTIVITY";
+    case CHECKOUT:
+      return "CHECKOUT";
+    case MERGE:
+      return "MERGE";
+    case MSEARCH:
+      return "MSEARCH";
+    case NOTIFY:
+      return "NOTIFY";
+    case SUBSCRIBE:
+      return "SUBSCRIBE";
+    case UNSUBSCRIBE:
+      return "UNSUBSCRIBE";
+    case PATCH:
+      return "PATCH";
+    default:
+      std::cerr << "Unknown HTTP method: " << method << std::endl;
+      exit(1);
+  }
 }
 
-bool Method::operator!=(const Method& rhs) const {
-  return myValue != rhs.myValue;
-}
-
-Method::operator Value() const { return myValue; }
-}
+}  // namespace http

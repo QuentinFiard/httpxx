@@ -39,6 +39,7 @@ class Error : public std::exception {
    */
   virtual const char* what() const throw();
 };
-}
+
+}  // namespace http
 
 #endif /* _http_Error__ */

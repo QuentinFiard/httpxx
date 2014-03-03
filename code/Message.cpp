@@ -6,39 +6,19 @@
 // "http://www.opensource.org/licenses/mit".
 
 #include "Message.hpp"
-#include "Error.hpp"
-#include "Flags.hpp"
-#include "icompare.hpp"
 
 #include <algorithm>
 #include <cstring>
-#include <utility>
-
 #include <iostream>
-
-namespace {
-
-struct Clear {
-  typedef std::pair<const std::string, std::string> Header;
-  void operator()(Header& header) const { header.second.clear(); }
-};
-
-class Matches {
-  const std::string& myField;
-
- public:
-  Matches(const std::string& field) : myField(field) {}
-  bool operator()(const std::pair<std::string, std::string>& field) {
-    return http::ieq(field.first, myField);
-  }
-};
-}
+#include <utility>
+#include "Error.hpp"
 
 namespace http {
 
 int Message::on_message_begin(::http_parser* parser) {
   Message& message = *static_cast<Message*>(parser->data);
   message.myComplete = false;
+  message.myHasPendingHeader = false;
   message.myHeadersComplete = false;
   return 0;
 }
@@ -58,11 +38,14 @@ int Message::on_message_complete(::http_parser* parser) {
 int Message::on_header_field(::http_parser* parser, const char* data,
                              size_t size) {
   Message& message = *static_cast<Message*>(parser->data);
-  if (!message.myCurrentValue.empty()) {
+  if (message.myHasPendingHeader) {
     message.myHeaders[message.myCurrentField] = message.myCurrentValue;
+    message.myActiveHeaders.insert(
+        message.myHeaders.find(message.myCurrentField));
     message.myCurrentField.clear();
     message.myCurrentValue.clear();
   }
+  message.myHasPendingHeader = true;
   message.myCurrentField.append(data, size);
   return 0;
 }
@@ -76,10 +59,11 @@ int Message::on_header_value(::http_parser* parser, const char* data,
 
 int Message::on_headers_complete(::http_parser* parser) {
   Message& message = *static_cast<Message*>(parser->data);
-  if (!message.myCurrentValue.empty()) {
+  if (message.myHasPendingHeader) {
     message.myHeaders[message.myCurrentField] = message.myCurrentValue;
-    message.myCurrentField.clear();
-    message.myCurrentValue.clear();
+    message.myActiveHeaders.insert(
+        message.myHeaders.find(message.myCurrentField));
+    message.myHasPendingHeader = false;
   }
   message.myHeadersComplete = true;
 
@@ -91,9 +75,16 @@ int Message::on_headers_complete(::http_parser* parser) {
   return 0;
 }
 
-Message::Message(Configure configure) {
+Message::Message(Configure configure)
+    : myActiveHeaders(0, HeaderIteratorHasher([&](const HeaderIterator& it) {
+                           if (it == myHeaders.end()) {
+                             return 0UL;
+                           }
+                           return reinterpret_cast<std::size_t>(&*it);
+                         })) {
   // make sure message is not seen as complete.
   myComplete = false;
+  myHasPendingHeader = false;
   myHeadersComplete = false;
   // select callbacks.
   ::memset(&mySettings, 0, sizeof(mySettings));
@@ -114,13 +105,20 @@ Message::~Message() {}
 void Message::clear() {
   // make sure message is not seen as complete.
   myComplete = false;
+  myHasPendingHeader = false;
   myHeadersComplete = false;
   // clear string content, while keeping memory allocated.
-  std::for_each(myHeaders.begin(), myHeaders.end(), Clear());
+  myCurrentField.clear();
+  myCurrentValue.clear();
+  for (auto& header : myHeaders) {
+    header.second.clear();
+  }
+  myActiveHeaders.clear();
 }
 
 void Message::reset_buffers() {
-  std::map<std::string, std::string>().swap(myHeaders);
+  decltype(myHeaders)().swap(myHeaders);
+  decltype(myActiveHeaders)().swap(myActiveHeaders);
 }
 
 std::size_t Message::feed(const void* data, ::size_t size) {
@@ -164,24 +162,18 @@ int Message::major_version() const { return myParser.http_major; }
 
 int Message::minor_version() const { return myParser.http_minor; }
 
-const Flags Message::flags() const { return Flags::of(myParser); }
+const Flags Message::flags() const { return GetFlagsFromParser(myParser); }
 
 bool Message::has_header(const std::string& field) const {
-  const Headers::const_iterator match =
-      std::find_if(myHeaders.begin(), myHeaders.end(), ::Matches(field));
-  return (match != myHeaders.end()) && !match->second.empty();
+  return myActiveHeaders.find(myHeaders.find(field)) != myActiveHeaders.end();
 }
 
-std::string Message::header(const std::string& field) const {
-  const Headers::const_iterator match =
-      std::find_if(myHeaders.begin(), myHeaders.end(), ::Matches(field));
-  if (match == myHeaders.end()) {
-    return "";
-  }
-  return match->second;
+const std::string& Message::header(const std::string& field) const {
+  return myHeaders.at(field);
 }
 
 bool Message::should_keep_alive() const {
   return ::http_should_keep_alive(const_cast< ::http_parser*>(&myParser)) != 0;
 }
-}
+
+}  // namespace http

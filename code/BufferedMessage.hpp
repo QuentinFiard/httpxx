@@ -68,12 +68,13 @@ class BufferedMessage : public Base {
    * @brief Release memory owned by all internal buffers.
    */
   virtual void reset_buffers() {
-    std::string().swap(myBody), Base::reset_buffers();
+    decltype(myBody)().swap(myBody), Base::reset_buffers();
   }
 };
 
 typedef BufferedMessage<Request> BufferedRequest;
 typedef BufferedMessage<Response> BufferedResponse;
-}
+
+}  // namespace http
 
 #endif /* _http_BufferedMessage_hpp__ */
