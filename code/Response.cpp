@@ -10,33 +10,25 @@
 
 namespace http {
 
-    Response::Response ()
-    {
-        ::memset(&myParser, 0, sizeof(myParser));
-        ::http_parser_init(&myParser, HTTP_RESPONSE);
-        myParser.data = this;
-    }
+Response::Response() {
+  ::memset(&myParser, 0, sizeof(myParser));
+  ::http_parser_init(&myParser, HTTP_RESPONSE);
+  myParser.data = this;
+}
 
-    Response::Response ( Configure configure )
-        : Message(configure)
-    {
-        ::memset(&myParser, 0, sizeof(myParser));
-        ::http_parser_init(&myParser, HTTP_RESPONSE);
-        myParser.data = this;
-    }
+Response::Response(Configure configure) : Message(configure) {
+  ::memset(&myParser, 0, sizeof(myParser));
+  ::http_parser_init(&myParser, HTTP_RESPONSE);
+  myParser.data = this;
+}
 
-    void Response::clear ()
-    {
-        Message::clear();
-            // (re-)initialize parser.
-        ::memset(&myParser, 0, sizeof(myParser));
-        ::http_parser_init(&myParser, HTTP_RESPONSE);
-        myParser.data = this;
-    }
+void Response::clear() {
+  Message::clear();
+  // (re-)initialize parser.
+  ::memset(&myParser, 0, sizeof(myParser));
+  ::http_parser_init(&myParser, HTTP_RESPONSE);
+  myParser.data = this;
+}
 
-    int Response::status () const
-    {
-        return (myParser.status_code);
-    }
-
+int Response::status() const { return (myParser.status_code); }
 }

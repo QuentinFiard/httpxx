@@ -9,49 +9,25 @@
 
 namespace http {
 
-    const Flags Flags::of ( const ::http_parser& parser )
-    {
-        return (static_cast< ::flags >(parser.flags));
-    }
+const Flags Flags::of(const ::http_parser& parser) {
+  return (static_cast< ::flags>(parser.flags));
+}
 
-    const Flags Flags::chunked ()
-    {
-        return (F_CHUNKED);
-    }
+const Flags Flags::chunked() { return (F_CHUNKED); }
 
-    const Flags Flags::keepalive ()
-    {
-        return (F_CONNECTION_KEEP_ALIVE);
-    }
+const Flags Flags::keepalive() { return (F_CONNECTION_KEEP_ALIVE); }
 
-    const Flags Flags::close ()
-    {
-        return (F_CONNECTION_CLOSE);
-    }
+const Flags Flags::close() { return (F_CONNECTION_CLOSE); }
 
-    const Flags Flags::trailing ()
-    {
-        return (F_TRAILING);
-    }
+const Flags Flags::trailing() { return (F_TRAILING); }
 
-    const Flags Flags::upgrade ()
-    {
-        return (F_UPGRADE);
-    }
+const Flags Flags::upgrade() { return (F_UPGRADE); }
 
-    const Flags Flags::skipbody ()
-    {
-        return (F_SKIPBODY);
-    }
+const Flags Flags::skipbody() { return (F_SKIPBODY); }
 
-    Flags::Flags ( Value value )
-        : myValue(value)
-    {
-    }
+Flags::Flags(Value value) : myValue(value) {}
 
-    bool Flags::operator& ( const Flags& rhs ) const
-    {
-        return ((myValue & rhs.myValue) != 0);
-    }
-
+bool Flags::operator&(const Flags& rhs) const {
+  return ((myValue & rhs.myValue) != 0);
+}
 }

@@ -13,43 +13,41 @@
 
 namespace http {
 
-    class Url
-    {
-        /* data. */
-    private:
-        std::string myData;
-        ::http_parser_url myFields;
+class Url {
+  /* data. */
+ private:
+  std::string myData;
+  ::http_parser_url myFields;
 
-        /* construction. */
-    public:
-        Url ( const std::string& url );
-        Url ( const char * data, std::size_t size );
+  /* construction. */
+ public:
+  Url(const std::string& url);
+  Url(const char* data, std::size_t size);
 
-        /* methods. */
-    public:
-        bool has_schema () const;
-        std::string schema () const;
+  /* methods. */
+ public:
+  bool has_schema() const;
+  std::string schema() const;
 
-        bool has_host () const;
-        std::string host () const;
+  bool has_host() const;
+  std::string host() const;
 
-        bool has_port () const;
-        std::string port () const;
+  bool has_port() const;
+  std::string port() const;
 
-        bool has_path () const;
-        std::string path () const;
+  bool has_path() const;
+  std::string path() const;
 
-        bool has_query () const;
-        std::string query () const;
+  bool has_query() const;
+  std::string query() const;
 
-        bool has_fragment () const;
-        std::string fragment () const;
+  bool has_fragment() const;
+  std::string fragment() const;
 
-    private:
-        bool has_field ( http_parser_url_fields field ) const;
-        std::string get_field ( http_parser_url_fields field ) const;
-    };
-
+ private:
+  bool has_field(http_parser_url_fields field) const;
+  std::string get_field(http_parser_url_fields field) const;
+};
 }
 
 #endif /* _http_Url__ */

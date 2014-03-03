@@ -14,34 +14,31 @@
 
 namespace http {
 
-        /*!
-         * @brief Raised when a parser signals inability to parse fed data.
-         */
-    class Error :
-        public std::exception
-    {
-        /* data. */
-    private:
-        ::http_errno myNumber;
+/*!
+ * @brief Raised when a parser signals inability to parse fed data.
+ */
+class Error : public std::exception {
+  /* data. */
+ private:
+  ::http_errno myNumber;
 
-        /* construction. */
-    public:
-            /*!
-             * @brief Build an @c Error instance documenting a specific error.
-             * @param number Numeric error code.
-             */
-        explicit Error ( ::http_errno number );
+  /* construction. */
+ public:
+  /*!
+   * @brief Build an @c Error instance documenting a specific error.
+   * @param number Numeric error code.
+   */
+  explicit Error(::http_errno number);
 
-        /* methods. */
-    public:
-            /*!
-             * @brief Obtain a textual description of the error.
-             * @return A pointer to the start of a statically allocated error
-             *  message.  Do @e not delete the returned error message.
-             */
-        virtual const char * what () const throw();
-    };
-
+  /* methods. */
+ public:
+  /*!
+   * @brief Obtain a textual description of the error.
+   * @return A pointer to the start of a statically allocated error
+   *  message.  Do @e not delete the returned error message.
+   */
+  virtual const char* what() const throw();
+};
 }
 
 #endif /* _http_Error__ */
