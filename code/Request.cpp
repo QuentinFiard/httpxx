@@ -13,7 +13,7 @@ namespace http {
 int Request::on_url(::http_parser* parser, const char* data, size_t size) {
   Request& request = *static_cast<Request*>(parser->data);
   request.myUrl.append(data, size);
-  return (0);
+  return 0;
 }
 
 Request::Request() {
@@ -48,11 +48,11 @@ void Request::reset_buffers() {
   std::string().swap(myUrl), Message::reset_buffers();
 }
 
-const Method Request::method() const { return (Method::of(myParser)); }
+const Method Request::method() const { return Method::of(myParser); }
 
-std::string Request::method_name() const { return (http_method_str(method())); }
+std::string Request::method_name() const { return http_method_str(method()); }
 
-bool Request::upgrade() const { return (myParser.upgrade != 0); }
+bool Request::upgrade() const { return myParser.upgrade != 0; }
 
-const std::string& Request::url() const { return (myUrl); }
+const std::string& Request::url() const { return myUrl; }
 }

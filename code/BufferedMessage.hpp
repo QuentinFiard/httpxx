@@ -28,7 +28,7 @@ class BufferedMessage : public Base {
  private:
   static int on_body(::http_parser* parser, const char* data, size_t size) {
     static_cast<Self*>(parser->data)->myBody.append(data, size);
-    return (0);
+    return 0;
   }
 
   static void extra_configuration(::http_parser_settings& settings) {
@@ -48,7 +48,7 @@ class BufferedMessage : public Base {
   /*!
    * @brief Obtain the buffered message body.
    */
-  const std::string& body() const { return (myBody); }
+  const std::string& body() const { return myBody; }
 
   /*!
    * @brief Clear the body contents after processing them.

@@ -30,5 +30,5 @@ void Response::clear() {
   myParser.data = this;
 }
 
-int Response::status() const { return (myParser.status_code); }
+int Response::status() const { return myParser.status_code; }
 }

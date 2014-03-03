@@ -12,6 +12,6 @@ namespace http {
 Error::Error(http_errno number) : myNumber(number) {}
 
 const char* Error::what() const throw() {
-  return (http_errno_description(myNumber));
+  return http_errno_description(myNumber);
 }
 }
