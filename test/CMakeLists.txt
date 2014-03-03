@@ -3,7 +3,6 @@
 macro(add_test_program name)
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} httpxx http_parser)
-  add_dependencies(${name} httpxx http_parser)
 
   # Make the program easily accessible.
   set(${name} ${CMAKE_CURRENT_BINARY_DIR}/${name})

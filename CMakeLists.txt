@@ -42,7 +42,6 @@ if(MSVC)
   )
 endif()
 add_library(http_parser
-  ${http_parser_headers}
   ${http_parser_sources}
 )
 target_include_directories(
